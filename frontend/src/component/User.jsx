@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FaPen,
   FaTimes,
@@ -7,9 +8,9 @@ import {
   FaMapMarkerAlt,
   FaUserCircle,
   FaCamera,
+  FaSignOutAlt
 } from "react-icons/fa";
 
-// ✅ Load from localStorage instead of hardcoded INIT
 const INIT = JSON.parse(localStorage.getItem('userProfile')) || {
   name: "Your Name",
   location: "Unknown",
@@ -17,10 +18,10 @@ const INIT = JSON.parse(localStorage.getItem('userProfile')) || {
   offers: [],
   wants: [],
   availability: [],
-  public: true,
 };
 
 export default function UserDashboard() {
+  const navigate = useNavigate();
   const [profile, setProfile] = useState(INIT);
   const [draft, setDraft] = useState(INIT);
   const [isEditing, setIsEditing] = useState(false);
@@ -55,7 +56,7 @@ export default function UserDashboard() {
       return setPopup("You must have at least one wanted skill.");
 
     setProfile(draft);
-    localStorage.setItem('userProfile', JSON.stringify(draft)); // ✅ Save changes to localStorage
+    localStorage.setItem('userProfile', JSON.stringify(draft));
     setIsEditing(false);
   };
 
@@ -73,6 +74,11 @@ export default function UserDashboard() {
         setDraft((prev) => ({ ...prev, avatar: reader.result }));
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('userProfile');
+    navigate('/'); // ✅ goes to landing page
   };
 
   return (
@@ -166,23 +172,12 @@ export default function UserDashboard() {
                 value={draft.location}
                 onChange={(v) => setDraft({ ...draft, location: v })}
               />
-              <div className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg shadow-sm">
-                <span className="font-medium text-gray-700">Public Profile</span>
-                <button
-                  onClick={() =>
-                    isEditing && setDraft({ ...draft, public: !draft.public })
-                  }
-                  className={`relative h-7 w-12 rounded-full ${
-                    draft.public ? "bg-indigo-600" : "bg-gray-300"
-                  } ${isEditing ? "cursor-pointer" : "cursor-default opacity-70"}`}
-                >
-                  <span
-                    className={`block h-5 w-5 bg-white rounded-full transform ${
-                      draft.public ? "translate-x-[22px]" : "translate-x-1"
-                    } transition-transform`}
-                  />
-                </button>
-              </div>
+              <button
+                onClick={handleLogout}
+                className="flex items-center justify-center w-full mt-4 gap-2 rounded-full bg-red-500 px-5 py-2 text-sm font-medium text-white shadow-lg hover:bg-red-600 transition-all"
+              >
+                <FaSignOutAlt /> Logout
+              </button>
             </div>
           </aside>
 
