@@ -11,7 +11,7 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 
-const LS_KEY = "userProfile";
+const LS_KEY = "userProfile";             // single source of truth
 const DEFAULT_PROFILE = {
   name: "Sarah Johnson",
   location: "San Francisco, CA",
@@ -27,25 +27,24 @@ const DEFAULT_PROFILE = {
 export default function UserDashboard() {
   const navigate = useNavigate();
 
-  // 1️⃣ – load from storage first
+  // load profile from storage (or fallback)
   const INIT = JSON.parse(localStorage.getItem(LS_KEY)) || DEFAULT_PROFILE;
 
-  const [profile, setProfile] = useState(INIT);
-  const [draft, setDraft] = useState(INIT);
+  const [profile, setProfile]   = useState(INIT);
+  const [draft, setDraft]       = useState(INIT);
   const [isEditing, setIsEditing] = useState(false);
-  const [popup, setPopup] = useState("");
+  const [popup, setPopup]       = useState("");
   const [newOffered, setNewOffered] = useState("");
-  const [newWanted, setNewWanted] = useState("");
+  const [newWanted, setNewWanted]   = useState("");
 
   // ─── helpers ────────────────────────────────────────────
-  const toggleArrayItem = (key, val) => {
+  const toggleArrayItem = (key, val) =>
     setDraft((p) => ({
       ...p,
       [key]: p[key].includes(val)
         ? p[key].filter((v) => v !== val)
         : [...p[key], val],
     }));
-  };
 
   const removeSkill = (key, skill) =>
     setDraft((p) => ({ ...p, [key]: p[key].filter((s) => s !== skill) }));
@@ -58,15 +57,13 @@ export default function UserDashboard() {
   };
 
   const handleSave = () => {
-    if (!draft.name.trim()) return setPopup("Name cannot be empty.");
-    if (!draft.location.trim()) return setPopup("Location cannot be empty.");
-    if (!draft.offers.length)
-      return setPopup("You must have at least one offered skill.");
-    if (!draft.wants.length)
-      return setPopup("You must have at least one wanted skill.");
+    if (!draft.name.trim())      return setPopup("Name cannot be empty.");
+    if (!draft.location.trim())  return setPopup("Location cannot be empty.");
+    if (!draft.offers.length)    return setPopup("You must have at least one offered skill.");
+    if (!draft.wants.length)     return setPopup("You must have at least one wanted skill.");
 
     setProfile(draft);
-    localStorage.setItem(LS_KEY, JSON.stringify(draft)); // 🔐 persist
+    localStorage.setItem(LS_KEY, JSON.stringify(draft)); // persist
     setIsEditing(false);
   };
 
@@ -80,14 +77,13 @@ export default function UserDashboard() {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () =>
-      setDraft((prev) => ({ ...prev, avatar: reader.result }));
+    reader.onload = () => setDraft((prev) => ({ ...prev, avatar: reader.result }));
     reader.readAsDataURL(file);
   };
 
   const handleLogout = () => {
     localStorage.removeItem(LS_KEY);
-    navigate("/"); // ⏮ back to landing
+    navigate("/");            // back to landing
   };
 
   // ─── UI ────────────────────────────────────────────────
@@ -109,13 +105,12 @@ export default function UserDashboard() {
       )}
 
       {/* main card */}
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 sm:p-6 lg:p-8 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4 sm:p-6 lg:p-8">
         <div className="w-full max-w-5xl overflow-hidden rounded-3xl bg-white/80 backdrop-blur-lg shadow-2xl">
           {/* header */}
-          <div className="flex flex-col items-center justify-between gap-3 border-b bg-white/90 px-6 py-6 sm:flex-row">
-            <h1 className="mb-2 text-2xl font-bold text-gray-800 sm:mb-0">
-              My Profile
-            </h1>
+          <div className="flex flex-col gap-3 border-b bg-white/90 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
+            <h1 className="text-2xl font-bold text-gray-800">My Profile</h1>
+
             {!isEditing ? (
               <button
                 onClick={() => {
@@ -124,8 +119,7 @@ export default function UserDashboard() {
                 }}
                 className="flex items-center gap-2 rounded-full bg-indigo-600 px-5 py-2 text-sm text-white shadow hover:bg-indigo-700"
               >
-                <FaPen className="text-xs" />
-                Edit Profile
+                <FaPen className="text-xs" /> Edit Profile
               </button>
             ) : (
               <div className="flex flex-wrap gap-3">
@@ -329,7 +323,8 @@ const SkillBlock = ({
   return (
     <div className="space-y-3">
       <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
-      {/* pills */}
+
+      {/* skill pills */}
       <div className="flex flex-wrap gap-3">
         {skills.map((s) => (
           <span
@@ -348,6 +343,7 @@ const SkillBlock = ({
           </span>
         ))}
       </div>
+
       {/* input */}
       {isEditing && (
         <div className="mt-3 flex gap-3">
