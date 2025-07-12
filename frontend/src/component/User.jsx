@@ -9,13 +9,14 @@ import {
   FaCamera,
 } from "react-icons/fa";
 
-const INIT = {
-  name: "Sarah Johnson",
-  location: "San Francisco, CA",
-  avatar: "https://placehold.co/120x120/6366F1/FFFFFF?text=SJ",
-  offers: ["Web Development", "UI/UX Design", "Photography"],
-  wants: ["Digital Marketing", "Spanish Language"],
-  availability: ["Weekends", "Mornings"],
+// ✅ Load from localStorage instead of hardcoded INIT
+const INIT = JSON.parse(localStorage.getItem('userProfile')) || {
+  name: "Your Name",
+  location: "Unknown",
+  avatar: "https://placehold.co/120x120/6366F1/FFFFFF?text=U",
+  offers: [],
+  wants: [],
+  availability: [],
   public: true,
 };
 
@@ -54,11 +55,12 @@ export default function UserDashboard() {
       return setPopup("You must have at least one wanted skill.");
 
     setProfile(draft);
+    localStorage.setItem('userProfile', JSON.stringify(draft)); // ✅ Save changes to localStorage
     setIsEditing(false);
   };
 
   const handleCancel = () => {
-    setDraft(profile); // restore previous
+    setDraft(profile);
     setIsEditing(false);
     setPopup("");
   };
@@ -184,7 +186,7 @@ export default function UserDashboard() {
             </div>
           </aside>
 
-          {/* Skill Blocks */}
+          {/* Skills */}
           <section className="lg:col-span-2 space-y-8">
             <SkillBlock
               title="Skills Offered"

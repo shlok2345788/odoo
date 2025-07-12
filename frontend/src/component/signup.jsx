@@ -8,24 +8,37 @@ const Signup = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate(); // Initialize useNavigate
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log('Submitting:', { name, email, password });
-    try {
-      const response = await fetch('http://localhost:5001/api/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
-      });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || 'Signup failed');
-      alert('Signup successful! Please login.');
-      navigate('/login'); // Navigate to /login instead of window.location.href
-    } catch (err) {
-      setError(err.message);
-      console.error('Signup error:', err.message, err.stack); // Improved logging
-    }
-  };
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  console.log('Submitting:', { name, email, password });
+  try {
+    const response = await fetch('http://localhost:5001/api/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password }),
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Signup failed');
+    
+    // ✅ Store name in local storage
+    localStorage.setItem('userProfile', JSON.stringify({
+      name,
+      location: "Unknown",
+      avatar: "https://placehold.co/120x120/6366F1/FFFFFF?text=U",
+      offers: [],
+      wants: [],
+      availability: [],
+      public: true
+    }));
+
+    alert('Signup successful! Please login.');
+    navigate('/login');
+  } catch (err) {
+    setError(err.message);
+    console.error('Signup error:', err.message, err.stack);
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
