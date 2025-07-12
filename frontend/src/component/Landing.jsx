@@ -29,8 +29,8 @@ const Landing = () => {
         </div>
 
         {/* Right Image Placeholder */}
-        <div className="w-full md:w-[40%] h-64 bg-gray-200 mt-10 md:mt-0 flex items-center justify-center rounded-lg">
-          <p className="text-gray-500">Hero Illustration</p>
+        <div className="w-full md:w-[40%] h-64  mt-10 md:mt-0 flex items-center justify-center rounded-lg">
+          <img className='h-80 ' src='https://storage.googleapis.com/uxpilot-auth.appspot.com/9766f825e1-778cda621de6b4caae4d.png'/>
         </div>
       </section>
 
