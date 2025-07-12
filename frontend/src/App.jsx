@@ -1,12 +1,18 @@
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Login from './component/login';
+import Signup from './component/signup';
 
-
-function App() {
-
+const App = () => {
   return (
-    <>
-    <h1 className="text-3xl font-bold text-red-600">Tum 3 Jhatu Thanks for using vite</h1>
-    </>
-  )
-}
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/" element={<Login />} />
+      </Routes>
+    </Router>
+  );
+};
 
-export default App
+export default App;
