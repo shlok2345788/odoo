@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,7 +18,7 @@ const Login = () => {
       const result = await response.json();
       if (!response.ok) throw new Error(result.message || 'Login failed');
       alert('Login successful!');
-      window.location.href = '/';
+      navigate('/home'); // Navigate to /home instead of window.location.href
     } catch (err) {
       setError(err.message);
       console.error('Login error:', err.message, err.stack); // Improved logging
